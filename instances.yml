@@ -11,14 +11,6 @@ json-api.s1-replica:
   advertise_uri: localhost:3303
   http_port: 8083
 
-json-api.s2-master:
-  advertise_uri: localhost:3304
-  http_port: 8084
-
-json-api.s2-replica:
-  advertise_uri: localhost:3305
-  http_port: 8085
-
 json-api-stateboard:
   listen: localhost:4401
   password: passwd
