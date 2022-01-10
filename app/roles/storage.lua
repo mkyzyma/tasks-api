@@ -12,5 +12,5 @@ return {
   utils = {
     task_add = task_storage.task_add
   },
-  dependencies = {'cartridge.roles.crud-storage'},
+  dependencies = {'cartridge.roles.vshard-storage'},
 }
