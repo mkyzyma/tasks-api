@@ -14,5 +14,5 @@ end
 
 return {
   json = json_response,
-  internal_error = internal_error_response
+  internal_error = internal_error_response,
 }
