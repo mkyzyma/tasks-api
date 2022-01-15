@@ -1,81 +1,81 @@
-local log = require('log')
 local cartridge = require('cartridge')
 local errors = require('errors')
 
 local err_vshard_router = errors.new_class("Vshard routing error")
 
--- TODO add functions for add, update and get
--- local function call(id, mode, function_name, arg_list)
---   log.info('>>>>> call');
+local Crud = {}
 
---   local router = cartridge.service_get('vshard-router').get()
---   local bucket_id = router:bucket_id_strcrc32(id)
+function Crud:new(id_name, field_for_bucket)
+  local self = {}
+  
+  local _id_name = id_name
+  local _field_for_bucket = field_for_bucket or id_name
 
---   if mode == 'write' then
---     arg_list.bucket_id = bucket_id
---   end
+  local function get_bucket_id(id_for_bucket)
+    local router = cartridge.service_get('vshard-router').get()
+    return router:bucket_id_strcrc32(id_for_bucket)
+  end
 
---   log.info('>>>>> arg list');
---   log.info(arg_list);
+  function self.add(function_name, entity)
+    local router = cartridge.service_get('vshard-router').get()
+    entity.bucket_id = get_bucket_id(entity[_field_for_bucket])
+  
+    return err_vshard_router:pcall(
+      router.call,
+      router,
+      entity.bucket_id,
+      'write',
+      function_name,
+      {entity}
+    )
+  end
+  
+  function self.get_by_id(function_name, id, field_for_bucket)
+    local router = cartridge.service_get('vshard-router').get()
+    local bucket_id = get_bucket_id(field_for_bucket or id)
+  
+    return err_vshard_router:pcall(
+      router.call,
+      router,
+      bucket_id,
+      'read',
+      function_name,
+      {id}
+    )
+  end
 
+  function self.delete(function_name, id, field_for_bucket)
+    local router = cartridge.service_get('vshard-router').get()
+    local bucket_id = get_bucket_id(field_for_bucket or id)
+  
+    return err_vshard_router:pcall(
+      router.call,
+      router,
+      bucket_id,
+      'write',
+      function_name,
+      {id}
+    )
+  end
 
---   return err_vshard_router:pcall(
---     router.call,
---     router,
---     bucket_id,
---     mode,
---     function_name,
---     {arg_list}
---   )
--- end
+  function self.update(function_name, id, entity)
+    entity[_id_name] = id
 
-local function get_bucket_id(id, id_for_bucket)
-  log.error('--------------------------')
-  log.error(id or id_for_bucket)
-  log.error('--------------------------')
-  local router = cartridge.service_get('vshard-router').get()
-  return router:bucket_id_strcrc32(id_for_bucket or id)
+    local router = cartridge.service_get('vshard-router').get()
+    entity.bucket_id = get_bucket_id(entity[_field_for_bucket])
+  
+    return err_vshard_router:pcall(
+      router.call,
+      router,
+      entity.bucket_id,
+      'write',
+      function_name,
+      {entity}
+    )
+  end
+
+  return self
 end
 
-local function add(function_name, entity, id_for_bucket)
-  log.info('>>>>> caller.add');
 
-  local router = cartridge.service_get('vshard-router').get()
-  entity.bucket_id = router:bucket_id_strcrc32(id_for_bucket)
-
-  log.info('>>>>> entity');
-  log.info(entity);
-
-  return err_vshard_router:pcall(
-    router.call,
-    router,
-    entity.bucket_id,
-    'write',
-    function_name,
-    {entity}
-  )
-end
-
-local function get_by_id(function_name, id, id_for_bucket)
-  log.info('>>>>> caller.get_by_id');
-
-  local router = cartridge.service_get('vshard-router').get()
-  local bucket_id = get_bucket_id(id, id_for_bucket)
-
-  log.info('>>>>> bucket_id');
-  log.info(bucket_id);
-
-  return err_vshard_router:pcall(
-    router.call,
-    router,
-    bucket_id,
-    'read',
-    function_name,
-    {id}
-  )
-end
-
-return {
-  add = add,
-  get_by_id = get_by_id,
-}
+return Crud
