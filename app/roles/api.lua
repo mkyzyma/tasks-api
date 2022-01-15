@@ -3,6 +3,8 @@ local errors = require('errors')
 
 local err_httpd = errors.new_class("httpd error")
 local TaskController = require('app.core.api.task-controller')
+local ListController = require('app.core.api.list-controller')
+local BaseController = require('app.core.api.task-controller')
 
 local function init(opts)
   local httpd = cartridge.service_get('httpd')
@@ -11,7 +13,8 @@ local function init(opts)
       return nil, err_httpd:new("not found")
   end
 
-  TaskController:new()
+  TaskController:new():init_routes()
+  ListController:new():init_routes()
 
   return true;
 end

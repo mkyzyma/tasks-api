@@ -1,12 +1,10 @@
 local BaseController = require('app.core.api.base-controller')
+local object = require('app.core.object')
 
-local TaskController = {}
+local TaskController = object.extend(BaseController)
 
 function TaskController:new()
-  local o = BaseController:new('task', 'task_id', nil)
-  setmetatable(o, self)
-  self.__index = self
-  return o
+  return BaseController:new('task', 'task_id', 'list_id')
 end
 
 return TaskController
