@@ -32,7 +32,7 @@ local function task_delete(id)
 end
 
 local function init_space()
-  box.space.task:drop()
+  -- box.space.task:drop()
   local task = box.schema.space.create(
     'task',
     {
