@@ -47,6 +47,12 @@ local function init_space()
     parts = {{ field = 'list_id'}},
     if_not_exists = true,
   })
+
+  list:create_index('list_id', {
+    parts = {{ field = 'list_id'}},
+    unique = false,
+    if_not_exists = true,
+  })
 end
 
 local function init_globals()
