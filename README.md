@@ -18,13 +18,21 @@ task: {
 
 ### Маршруты
 GET http://mkyzyma.ru:8081/tasks[?list_id={list_id}]
+
 GET http://mkyzyma.ru:8081/tasks/:id
+
 POST http://mkyzyma.ru:8081/tasks
+
 PUT http://mkyzyma.ru:8081/tasks/:id
+
 DELETE http://mkyzyma.ru:8081/tasks/:id
 
 GET http://mkyzyma.ru:8081/lists
+
 GET http://mkyzyma.ru:8081/lists/:id
+
 POST http://mkyzyma.ru:8081/lists
+
 PUT http://mkyzyma.ru:8081/lists/:id
+
 DELETE http://mkyzyma.ru:8081/lists/:id
