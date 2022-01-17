@@ -1,6 +1,5 @@
 local cartridge = require('cartridge')
 local errors = require('errors')
-local log = require('log')
 
 local err_vshard_router = errors.new_class("Vshard routing error")
 
@@ -46,13 +45,14 @@ function Crud:new(id_name, field_for_bucket)
   function self.get_all(function_name, params)
     local router = cartridge.service_get('vshard-router').get()
 
-    log.error(' >>> get_all: ')
-    log.error(params)
-  
+    
+    local value_for_bucket = params[field_for_bucket] or '0';
+    local bucket_id = get_bucket_id(value_for_bucket)
+
     return err_vshard_router:pcall(
       router.callro,
       router,
-      1000,
+      bucket_id,
       function_name,
       {params}
     )

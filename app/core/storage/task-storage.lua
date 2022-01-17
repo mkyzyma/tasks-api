@@ -1,5 +1,4 @@
 local convert = require('app.core.storage.convert')
-local log = require("log")
 
 local uuid = require('uuid')
 

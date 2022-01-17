@@ -1,6 +1,5 @@
 local uuid = require('uuid')
 local cartridge = require('cartridge')
-local log = require('log')
 
 local Crud = require('app.core.api.crud')
 local response = require('app.core.api.response')
