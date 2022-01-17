@@ -42,3 +42,24 @@ POST http://mkyzyma.ru:8081/lists
 PUT http://mkyzyma.ru:8081/lists/:id
 
 DELETE http://mkyzyma.ru:8081/lists/:id
+
+### Примеры
+##### Добавить список:
+```
+curl -X POST -v -H "Content-Type: application/json" -d '{
+"title": "qwerty", "text": "asdf"}' http://mkyzyma.ru:8081/lists
+```
+##### Добавить задачу:
+```
+curl -X POST -v -H "Content-Type: application/json" -d '{
+"title": "qwerty", "text": "asdf", "completed": true, "list_id": "73f73760-e7a5-4666-910f-733c3b89583c"
+}' http://mkyzyma.ru:8081/tasks
+```
+##### Получить все задачи:
+```
+curl -X GET -v -H "Content-Type: application/json"  http://localhost:8081/tasks
+```
+##### Получить все задачи списка:
+```
+curl -X GET -v -H "Content-Type: application/json"  http://localhost:8081/tasks\?list_id\=842b7611-e863-4356-b96d-882415d0f08c
+```
