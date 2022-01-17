@@ -1,8 +1,10 @@
 local uuid = require('uuid')
 local cartridge = require('cartridge')
+local log = require('log')
 
 local Crud = require('app.core.api.crud')
 local response = require('app.core.api.response')
+local json = require("json")
 
 
 local BaseController = {}
@@ -34,6 +36,10 @@ function BaseController:new(entity_name, id_name, field_for_bucket)
     return entity_name .. '_get'
   end
 
+  function public:select_function_name()
+    return entity_name .. '_select'
+  end
+
   function public:handle_error(req, resp, error) 
     local e = error or resp.error
     return response.internal_error(req, e)
@@ -45,6 +51,9 @@ function BaseController:new(entity_name, id_name, field_for_bucket)
     
     httpd:route(
       { path = '/' .. public:route_name(), method = 'POST', public = true}, self.add
+    )
+    httpd:route(
+      { path = '/' .. public:route_name(), method = 'GET', public = true}, self.select
     )
     httpd:route(
       { path = '/' .. public:route_name() .. '/:id', method = 'GET', public = true}, self.getById
@@ -80,6 +89,18 @@ function BaseController:new(entity_name, id_name, field_for_bucket)
     end
   
     return response.json(req, resp[entity_name], 200)
+  end
+
+  function public.select(req)
+    local params = req:query_param()
+
+    local resp, error = public.crud.get_all(public:select_function_name(), params)
+    
+    if error or resp.error then
+      return public:handle_error(req, resp, error)
+    end
+  
+    return response.json(req, resp[entity_name .. 's'], 200)
   end
 
   function public.update(req)

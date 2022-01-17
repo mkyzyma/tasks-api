@@ -22,6 +22,11 @@ local function list_get(id)
   return { list = convert.tuple_to_table(box.space.list:format(), list), error = nil }
 end
 
+local function list_select(params) 
+  local lists = box.space.list:select(params)
+  return { lists = convert.tuples_to_tables(box.space.list:format(), lists), error = nil }
+end
+
 local function list_delete(id)
   box.space.list:delete(uuid.fromstr(id))
 
@@ -48,6 +53,12 @@ local function init_space()
     if_not_exists = true,
   })
 
+  list:create_index('bucket_id', {
+    parts = {{ field = 'bucket_id'}},
+    unique = false,
+    if_not_exists = true,
+  })
+
   list:create_index('list_id', {
     parts = {{ field = 'list_id'}},
     unique = false,
@@ -60,6 +71,7 @@ local function init_globals()
   rawset(_G, 'list_update', list_update)
   rawset(_G, 'list_get', list_get)
   rawset(_G, 'list_delete', list_delete)
+  rawset(_G, 'list_select', list_select)
 end
 
 local function init(opts)
@@ -70,6 +82,7 @@ local function init(opts)
     box.schema.func.create('list_update', {if_not_exists = true})
     box.schema.func.create('list_get', {if_not_exists = true})
     box.schema.func.create('list_delete', {if_not_exists = true})
+    box.schema.func.create('list_select', {if_not_exists = true})
   end
 
   init_globals()
@@ -80,5 +93,6 @@ return {
   list_add = list_add,
   list_update = list_update,
   list_get = list_get,
-  list_delete = list_delete
+  list_delete = list_delete,
+  list_select = list_select
 }

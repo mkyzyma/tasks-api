@@ -1,4 +1,5 @@
 local convert = require('app.core.storage.convert')
+local log = require("log")
 
 local uuid = require('uuid')
 
@@ -23,6 +24,18 @@ end
 local function task_get(id) 
   local task = box.space.task:get(uuid.fromstr(id))
   return { task = convert.tuple_to_table(box.space.task:format(), task), error = nil }
+end
+
+local function task_select(params) 
+  local tasks = {}
+
+  if params.list_id ~= nil then
+    local list_id = uuid.fromstr(params.list_id)
+    tasks = box.space.task.index.list_id:select({list_id})
+  else
+    tasks = box.space.task:select()
+  end
+  return { tasks = convert.tuples_to_tables(box.space.task:format(), tasks), error = nil }
 end
 
 local function task_delete(id)
@@ -53,6 +66,12 @@ local function init_space()
     if_not_exists = true,
   })
 
+  task:create_index('bucket_id', {
+    parts = {{ field = 'bucket_id'}},
+    unique = false,
+    if_not_exists = true,
+  })
+
   task:create_index('list_id', {
     parts = {{ field = 'list_id'}},
     unique = false,
@@ -64,6 +83,7 @@ local function init_globals()
   rawset(_G, 'task_add', task_add)
   rawset(_G, 'task_update', task_update)
   rawset(_G, 'task_get', task_get)
+  rawset(_G, 'task_select', task_select)
   rawset(_G, 'task_delete', task_delete)
 end
 
@@ -74,6 +94,7 @@ local function init(opts)
     box.schema.func.create('task_add', {if_not_exists = true})
     box.schema.func.create('task_update', {if_not_exists = true})
     box.schema.func.create('task_get', {if_not_exists = true})
+    box.schema.func.create('task_select', {if_not_exists = true})
     box.schema.func.create('task_delete', {if_not_exists = true})
   end
 
@@ -85,5 +106,6 @@ return {
   task_add = task_add,
   task_update = task_update,
   task_get = task_get,
-  task_delete = task_delete
+  task_delete = task_delete,
+  task_select = task_select
 }
