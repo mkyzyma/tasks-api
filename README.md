@@ -4,18 +4,21 @@
 
 Я вынес всю логику в папку app/core. Там есть подпапки api и storage, внутри этих папок есть файлы list-controller и task-controller, а также list-storage и task-storage. Для api я сделал базовый класс BaseController, который реализует CRUD операции на основе параметров конструктора. TaskController и ListController наследуются от него.
 
+Я сделал так что bucket_id генерируется по list_id. То есть каждый список в отдельном сегменте
+```
 list: {
   title: string,
   text: string
 }
-
+```
+```
 task: {
   list_id: UUID,
   title: string,
   text: string,
   completed: boolean
 }
-
+```
 ### Маршруты
 #### Tasks
 GET http://mkyzyma.ru:8081/tasks[?list_id={list_id}]
