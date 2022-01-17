@@ -17,6 +17,7 @@ task: {
 }
 
 ### Маршруты
+#### Tasks
 GET http://mkyzyma.ru:8081/tasks[?list_id={list_id}]
 
 GET http://mkyzyma.ru:8081/tasks/:id
@@ -26,6 +27,8 @@ POST http://mkyzyma.ru:8081/tasks
 PUT http://mkyzyma.ru:8081/tasks/:id
 
 DELETE http://mkyzyma.ru:8081/tasks/:id
+
+#### Lists
 
 GET http://mkyzyma.ru:8081/lists
 
